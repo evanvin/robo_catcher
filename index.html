@@ -138,9 +138,15 @@
         // Get the div element by its id
         const jsonContainer = document.getElementById('test');
 
+        var responsssse = await postRequest.json();
+
         // Set the inner HTML of the div to the JSON string
-        jsonContainer.innerHTML = `<pre>${jsonString}</pre><div>${JSON.stringify(postRequest)}</div>gi`;
-        return '';
+        jsonContainer.innerHTML = `<pre>${jsonString}</pre><pre>${JSON.stringify(
+          responsssse,
+          undefined,
+          4
+        )}</pre>`;
+        return responsssse;
       }
 
       getData().then((data) => {
