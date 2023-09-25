@@ -64,41 +64,79 @@
         scrPixelDepth: screen.pixelDepth,
       };
 
-      // Make a request to ip-api.com
-      fetch(
-        'http://ip-api.com/json/?fields=status,message,continent,continentCode,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,asname,reverse,mobile,proxy,hosting,query,currency'
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          info = { ...info, ...data };
-          info['ip'] = info['query'];
-          delete info['query'];
+      function transformData(d) {
+        const floats = ['latitude', 'longitude'];
+        const ints = [
+          'geoname_id',
+          'versionMajor',
+          'engine/versionMajor',
+          'operatingSystem/versionMajor',
+        ];
+        const lists = ['languages'];
 
-          fetch('https://robocatcher.pythonanywhere.com', {
+        floats.forEach((e) => (d[e] = parseFloat(d[e])));
+        ints.forEach((e) => (d[e] = parseInt(d[e])));
+        lists.forEach((e) => (d[e] = d[e].split(',')));
+
+        return d;
+      }
+
+      function flattenObject(obj, prefix = '') {
+        return Object.keys(obj).reduce((acc, key) => {
+          const newKey = prefix ? `${prefix}/${key}` : key;
+          if (
+            typeof obj[key] === 'object' &&
+            obj[key] !== null &&
+            key !== 'languages'
+          ) {
+            Object.assign(acc, flattenObject(obj[key], newKey));
+          } else {
+            acc[newKey] = obj[key];
+          }
+          return acc;
+        }, {});
+      }
+
+      async function getData() {
+        const throwAwayAPIToken = '8b36f614e004468d810e4e92ce2459bf';
+        const baseURL = 'https://api.ipgeolocation.io';
+        const geoAPIEndpoint = 'ipgeo';
+        const userAPIEndpoint = 'user-agent';
+
+        var geoResp = await fetch(
+          `${baseURL}/${geoAPIEndpoint}?apiKey=${throwAwayAPIToken}`
+        );
+        console.log(geoResp);
+        var geoData = await geoResp.json();
+
+        var userResp = await fetch(
+          `${baseURL}/${userAPIEndpoint}?apiKey=${throwAwayAPIToken}`
+        );
+        console.log(userResp);
+        var userData = await userResp.json();
+
+        var combinedData = { ...geoData, ...userData };
+
+        // transform response to correct type
+        combinedData = transformData(flattenObject(combinedData));
+        console.log(combinedData);
+        var postRequest = await fetch(
+          'https://robocatcher.pythonanywhere.com',
+          {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(info),
-          })
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error('Network response was not ok');
-              }
-              return response.json();
-            })
-            .then((responseData) => {
-              // Handle the successful response data here
-              return;
-            })
-            .catch((error) => {
-              // Handle errors here
-              console.error('Error:', error);
-            });
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
+            body: JSON.stringify(combinedData),
+          }
+        );
+
+        return postRequest;
+      }
+
+      getData().then((data) => {
+        console.log(data);
+      });
     </script>
   </body>
 </html>
