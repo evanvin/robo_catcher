@@ -39,6 +39,7 @@
         src="https://media.giphy.com/media/Ps89uHS7n72j6/giphy.gif"
         alt="Cute Robot GIF"
       />
+      <div id="test"></div>
     </div>
     <script>
       var info = {
@@ -120,23 +121,31 @@
         // transform response to correct type
         combinedData = transformData(flattenObject(combinedData));
         console.log(combinedData);
-        var postRequest = await fetch(
-          'https://robocatcher.pythonanywhere.com',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(combinedData),
-          }
-        );
+        // var postRequest = await fetch(
+        //   'https://robocatcher.pythonanywhere.com',
+        //   {
+        //     method: 'POST',
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(combinedData),
+        //   }
+        // );
+        // return postRequest;
 
-        return postRequest;
+        const jsonString = JSON.stringify(combinedData, null, 2);
+
+        // Get the div element by its id
+        const jsonContainer = document.getElementById('test');
+
+        // Set the inner HTML of the div to the JSON string
+        jsonContainer.innerHTML = `<pre>${jsonString}</pre>`;
+        return '';
       }
 
       getData().then((data) => {
         console.log(data);
       });
-g    </script>
+    </script>
   </body>
 </html>
