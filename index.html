@@ -75,8 +75,8 @@
         ];
         const lists = ['languages'];
 
-        floats.forEach((e) => (d[e] = parseFloat(d[e])));
-        ints.forEach((e) => (d[e] = parseInt(d[e])));
+        floats.forEach((e) => (d[e] = parseFloat(d[e]) || -1.0));
+        ints.forEach((e) => (d[e] = parseInt(d[e]) || -1));
         lists.forEach((e) => (d[e] = d[e].split(',')));
 
         return d;
