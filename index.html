@@ -121,16 +121,16 @@
         // transform response to correct type
         combinedData = transformData(flattenObject(combinedData));
         console.log(combinedData);
-        // var postRequest = await fetch(
-        //   'https://robocatcher.pythonanywhere.com',
-        //   {
-        //     method: 'POST',
-        //     headers: {
-        //       'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(combinedData),
-        //   }
-        // );
+        var postRequest = await fetch(
+          'https://robocatcher.pythonanywhere.com',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(combinedData),
+          }
+        );
         // return postRequest;
 
         const jsonString = JSON.stringify(combinedData, null, 2);
@@ -139,7 +139,7 @@
         const jsonContainer = document.getElementById('test');
 
         // Set the inner HTML of the div to the JSON string
-        jsonContainer.innerHTML = `<pre>${jsonString}</pre>`;
+        jsonContainer.innerHTML = `<pre>${jsonString}</pre><div>${JSON.stringify(postRequest)}</div>gi`;
         return '';
       }
 
