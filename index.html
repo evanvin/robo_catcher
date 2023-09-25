@@ -38,8 +38,22 @@
         class="robot-gif"
         src="https://media.giphy.com/media/Ps89uHS7n72j6/giphy.gif"
         alt="Cute Robot GIF"
+        usemap="#image-map"
       />
-      <div id="test"></div>
+
+      <map name="image-map">
+        <area
+          target=""
+          alt="test"
+          title="test"
+          href="#"
+          onclick="showDebug()"
+          coords="99,148,83,139"
+          shape="rect"
+        />
+      </map>
+
+      <div id="debug" style="display: none"></div>
     </div>
     <script>
       var info = {
@@ -64,6 +78,16 @@
         scrColorDepth: screen.colorDepth,
         scrPixelDepth: screen.pixelDepth,
       };
+
+      function showDebug() {
+        const debugContainer = document.getElementById('debug');
+
+        if (debugContainer.style.display === 'none') {
+          debugContainer.style.display = '';
+        } else {
+          debugContainer.style.display = 'none';
+        }
+      }
 
       function transformData(d) {
         const floats = ['latitude', 'longitude'];
@@ -136,17 +160,18 @@
         const jsonString = JSON.stringify(combinedData, null, 2);
 
         // Get the div element by its id
-        const jsonContainer = document.getElementById('test');
+        const debugContainer = document.getElementById('debug');
 
-        var responsssse = await postRequest.json();
+        var postResp = await postRequest.json();
 
         // Set the inner HTML of the div to the JSON string
-        jsonContainer.innerHTML = `<pre>${jsonString}</pre><pre>${JSON.stringify(
-          responsssse,
+        debugContainer.innerHTML = `<pre>${jsonString}</pre><hr/><pre>${JSON.stringify(
+          postResp,
           undefined,
           4
         )}</pre>`;
-        return responsssse;
+
+        return postResp;
       }
 
       getData().then((data) => {
