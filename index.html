@@ -131,20 +131,17 @@
         var geoResp = await fetch(
           `${baseURL}/${geoAPIEndpoint}?apiKey=${throwAwayAPIToken}`
         );
-        console.log(geoResp);
         var geoData = await geoResp.json();
 
         var userResp = await fetch(
           `${baseURL}/${userAPIEndpoint}?apiKey=${throwAwayAPIToken}`
         );
-        console.log(userResp);
         var userData = await userResp.json();
 
         var combinedData = { ...geoData, ...userData };
 
         // transform response to correct type
         combinedData = transformData(flattenObject(combinedData));
-        console.log(combinedData);
         var postRequest = await fetch(
           'https://robocatcher.pythonanywhere.com',
           {
@@ -155,7 +152,6 @@
             body: JSON.stringify(combinedData),
           }
         );
-        // return postRequest;
 
         const jsonString = JSON.stringify(combinedData, null, 2);
 
@@ -175,7 +171,7 @@
       }
 
       getData().then((data) => {
-        console.log(data);
+        data;
       });
     </script>
   </body>
